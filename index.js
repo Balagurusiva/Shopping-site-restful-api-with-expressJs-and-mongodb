@@ -3,6 +3,7 @@ import 'dotenv/config'
 import dbConnect from './config/dbConnect.js' 
 
 import authRoute from './routes/authRoute.js'
+import { errorHandler, notFound } from './middleware/errorHandler.js'
  
 const PORT = process.env.PORT || 3000
 const app = express()
@@ -14,6 +15,9 @@ app.use(express.json())
 
 //routes
 app.use('/api/user', authRoute)
+
+app.use(notFound)
+app.use(errorHandler)
 
 
 // mongoose

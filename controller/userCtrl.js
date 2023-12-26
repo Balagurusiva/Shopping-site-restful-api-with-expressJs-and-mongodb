@@ -1,21 +1,22 @@
 import User from '../models/userModel.js'
+import asyncHandler from 'express-async-handler'
+import bcrypt from 'bcrypt'
 
-const createUser = async (req,res) => {
+//controller to create a user 
+const createUser = asyncHandler(async (req, res) => {
     const email = req.body.email
 
-    const user = await User.findOne({email})
+    const user = await User.findOne({ email })
 
-    if(!user){
-        const newUser = User.create(req.body)
+    if (!user) { 
+        const password = bcrypt.hashSync(req.body.password, 10)
+        const newUser = User.create({...req.body, password})
         res.status(200).json({
-            "msg":"user created "
+            "msg": "user created "
         })
-    }else{
-        res.status(403).json({
-            msg:"user already exits",
-            success:false
-        })
+    } else {
+         throw new Error("User Already Exits")
     }
-}
+})
 
 export default createUser
