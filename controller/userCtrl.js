@@ -3,11 +3,9 @@ import asyncHandler from 'express-async-handler'
 import bcrypt from 'bcrypt'
 
 //controller to create a user 
-const createUser = asyncHandler(async (req, res) => {
+export const createUser = async (req, res) => {
     const email = req.body.email
-
     const user = await User.findOne({ email })
-
     if (!user) { 
         const password = bcrypt.hashSync(req.body.password, 10)
         const newUser = User.create({...req.body, password})
@@ -15,8 +13,23 @@ const createUser = asyncHandler(async (req, res) => {
             "msg": "user created "
         })
     } else {
-         throw new Error("User Already Exits")
+         res.status(403).json({
+            msg:"User already exists"
+         })
     }
-})
+}
 
-export default createUser
+//controller to login the user
+export const login = async(req,res) => {
+    let {email, password} = req.body
+
+    const user = await User.findOne({email})
+    const isPasswordMatched = await bcrypt.compare(password, user.password)
+    if(user && isPasswordMatched){
+        res.status(200).json(user)
+    }else{
+         res.status(401).json({
+            msg:"Invalid data"
+         })
+    }
+}
