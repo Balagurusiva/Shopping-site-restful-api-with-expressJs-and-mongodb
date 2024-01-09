@@ -64,39 +64,64 @@ export const getAllUser = async (req, res) => {
         })
     } catch (error) {
         res.status(500).json({
-            "msg":"server error"
+            "msg": "server error"
         })
     }
 
 }
 
 //get a single user
-export const getUser = async (req,res) => { 
+export const getUser = async (req, res) => {
     try {
-        const {id} = req.params
-        const user = await User.find({_id : id})
+        const { id } = req.params
+        const user = await User.find({ _id: id })
         res.status(200).json({
-            "data":[...user]
+            "data": [...user]
         })
     } catch (error) {
         res.status(500).json({
-            "msg":"server error"
+            "msg": "server error"
         })
     }
 }
 
 //delete a user 
-export const deleteUser = async (req,res) => { 
+export const deleteUser = async (req, res) => {
     try {
-        const {id} = req.params
-        await User.findByIdAndDelete({ _id:id})
+        const { id } = req.params
+        await User.findByIdAndDelete({ _id: id })
         res.status(200).json({
-            "data":"user deleted successfully"
+            "data": "user deleted successfully"
         })
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            "msg":"server error"
+            "msg": "server error"
+        })
+    }
+}
+
+//updata user
+export const updateUser = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const updatedUser = await User.findByIdAndUpdate(id,
+            {
+                firstName: req.body?.firstName,
+                lastName: req.body?.lastName,
+                email: req.body?.email,
+                mobile: req.body?.mobile,
+            }).lean()
+
+        res.status(200).json({
+            "msg": "User updated",
+            "data": [{ ...updatedUser }]
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            "msg": "Server Error"
         })
     }
 }
