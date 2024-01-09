@@ -11,10 +11,10 @@ export const createUser = async (req, res) => {
         if (!user) {
             const password = bcrypt.hashSync(req.body.password, 10)
             await User.create({ ...req.body, password })
-            let user = await User.findOne({email},{password:0}).lean()
+            let user = await User.findOne({ email }, { password: 0 }).lean()
             res.status(200).json({
                 "msg": "user created",
-                "data":{...user}
+                "data": { ...user }
             })
         } else {
             res.status(403).json({
@@ -50,7 +50,53 @@ export const login = async (req, res) => {
         }
     } catch (error) {
         console.log(error)
-        res.status(500).json({"msg":"server error"})
+        res.status(500).json({ "msg": "server error" })
     }
 
+}
+
+//get all user
+export const getAllUser = async (req, res) => {
+    try {
+        const user = await User.find().lean()
+        res.status(200).json({
+            "data": [...user]
+        })
+    } catch (error) {
+        res.status(500).json({
+            "msg":"server error"
+        })
+    }
+
+}
+
+//get a single user
+export const getUser = async (req,res) => { 
+    try {
+        const {id} = req.params
+        const user = await User.find({_id : id})
+        res.status(200).json({
+            "data":[...user]
+        })
+    } catch (error) {
+        res.status(500).json({
+            "msg":"server error"
+        })
+    }
+}
+
+//delete a user 
+export const deleteUser = async (req,res) => { 
+    try {
+        const {id} = req.params
+        await User.findByIdAndDelete({ _id:id})
+        res.status(200).json({
+            "data":"user deleted successfully"
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            "msg":"server error"
+        })
+    }
 }
