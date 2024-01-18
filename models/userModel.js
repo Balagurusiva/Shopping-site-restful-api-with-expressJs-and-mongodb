@@ -1,18 +1,19 @@
 import mongoose from "mongoose";
 import bcrypt from 'bcrypt'
+import { ObjectId } from "mongodb";
 
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        required: true, 
+        required: true,
     },
     lastName: {
         type: String,
-        required: true, 
+        required: true,
     },
     email: {
         type: String,
-        required: true, 
+        required: true,
         unique: true,
     },
     mobile: {
@@ -25,10 +26,24 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     role: {
-        type : String,
-        default:'user'
-    }
-});
+        type: String,
+        default: 'user'
+    },
+    cart: {
+        type: Array,
+        default: []
+    },
+    address: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Address"
+    }],
+    wishlist: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product"
+    }],
+},
+    { timestamps: true }
+);
 
- 
+
 export default mongoose.model('User', userSchema);

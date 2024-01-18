@@ -1,5 +1,6 @@
 import express from 'express'
 import {createUser, login, getAllUser, getUser, deleteUser, updateUser} from '../controller/userCtrl.js'
+import { authMiddleware } from '../middleware/authMiddleWare.js'
 
 const router = express.Router()
 
@@ -11,7 +12,7 @@ router.post('/login', login )
 router.get('/all-user', getAllUser)
 
 //get a single user
-router.get('/getUser/:id', getUser)
+router.get('/getUser/:id',authMiddleware,  getUser)
 
 //delete a user
 router.delete('/user/:id', deleteUser)
